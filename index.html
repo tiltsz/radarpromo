@@ -1,0 +1,2795 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RadarPromo • Caçador de Ofertas & Bugs com IA</title>
+  <meta name="description" content="O portal de promoções inteligente que audita descontos com IA, monitora bugs 24h e entrega cupons reais dos maiores marketplaces.">
+  
+  <!-- Fontes Google Modernas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Ícones Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+/* ==========================================================================
+   RADARPROMO - DESIGN SYSTEM EMBUTIDO (100% AUTO-SUFICIENTE)
+   ========================================================================== */
+:root {
+  --bg-app: #070A12;
+  --bg-surface: #0D1322;
+  --bg-card: #121A2F;
+  --bg-card-hover: #18233E;
+  --bg-glass: rgba(18, 26, 47, 0.75);
+  
+  --neon-mint: #00F59B;
+  --neon-mint-dark: #00C47C;
+  --neon-mint-glow: rgba(0, 245, 155, 0.22);
+  --electric-cyan: #00D4FF;
+  --hot-coral: #FF3B5C;
+  --hot-coral-glow: rgba(255, 59, 92, 0.25);
+  --warning-amber: #FFB800;
+  --purple-trend: #8B5CF6;
+
+  --text-white: #FFFFFF;
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-active: rgba(0, 245, 155, 0.35);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 25px var(--neon-mint-glow);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-logo, .stat-number {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+  transition: all var(--transition-fast);
+}
+
+/* 1. LIVE TICKER BAR */
+.live-ticker-bar {
+  background: linear-gradient(90deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 8px 24px;
+  font-size: 0.8125rem;
+  position: relative;
+  z-index: 100;
+}
+
+.ticker-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ticker-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--neon-mint);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--neon-mint);
+  animation: pulseAnimation 1.6s infinite ease-in-out;
+}
+
+@keyframes pulseAnimation {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+}
+
+.ticker-highlight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-glitch {
+  background: rgba(255, 59, 92, 0.15);
+  border: 1px solid rgba(255, 59, 92, 0.4);
+  color: var(--hot-coral);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+}
+
+.badge-glitch svg {
+  width: 13px;
+  height: 13px;
+}
+
+.glitch-text {
+  color: #F87171;
+  font-weight: 600;
+}
+
+/* 2. MAIN HEADER */
+.main-header {
+  background: rgba(13, 19, 34, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  padding: 14px 24px;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  user-select: none;
+}
+
+/* ============ IDENTIDADE VISUAL: RADAR ANIMADO ============ */
+.radar-logo-wrap {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+}
+
+.radar-sonar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 245, 155, 0.4);
+  animation: sonarLogoOut 2.4s ease-out infinite;
+}
+.radar-sonar-ring:nth-child(2) { animation-delay: 0.8s; }
+.radar-sonar-ring:nth-child(3) { animation-delay: 1.6s; }
+
+@keyframes sonarLogoOut {
+  0%   { transform: scale(0.45); opacity: 1; }
+  100% { transform: scale(1.7);  opacity: 0; }
+}
+
+.radar-outer-ring {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 245, 155, 0.2);
+  background: radial-gradient(circle, rgba(0,245,155,0.05) 0%, transparent 70%);
+}
+
+.radar-svg-main {
+  position: absolute;
+  inset: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+}
+
+.radar-sweep-arm {
+  transform-origin: 50% 50%;
+  animation: sweepRotate 3s linear infinite;
+}
+
+@keyframes sweepRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.radar-logo-blip {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: var(--neon-mint);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--neon-mint);
+  animation: blipPop 3s ease-out infinite;
+}
+.radar-logo-blip.b1 { top: 18%; left: 62%; animation-delay: 0.4s; }
+.radar-logo-blip.b2 { top: 62%; left: 20%; animation-delay: 1.4s; }
+
+@keyframes blipPop {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  35%, 55%  { opacity: 1; transform: scale(1); }
+}
+
+/* Tipografia da marca */
+.logo-text h1 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-white);
+  letter-spacing: -0.03em;
+}
+
+.logo-text h1 span {
+  background: linear-gradient(135deg, var(--neon-mint) 0%, #00D4FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tagline {
+  font-size: 0.725rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.search-wrapper {
+  flex: 1;
+  max-width: 580px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-wrapper input {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 12px 105px 12px 46px;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.search-wrapper input:focus {
+  border-color: var(--neon-mint);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 3px var(--neon-mint-glow);
+}
+
+.search-shortcut {
+  position: absolute;
+  right: 14px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  pointer-events: none;
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 70px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+}
+
+.clear-search-btn:hover {
+  color: var(--text-primary);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-vip-channel {
+  background: linear-gradient(135deg, #1E1B4B 0%, #311042 100%);
+  border: 1px solid rgba(255, 59, 92, 0.35);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(255, 59, 92, 0.15);
+}
+
+.btn-vip-channel:hover {
+  transform: translateY(-2px);
+  border-color: var(--hot-coral);
+  box-shadow: 0 6px 20px var(--hot-coral-glow);
+}
+
+.vip-pulse-icon {
+  color: var(--hot-coral);
+  display: flex;
+}
+
+.vip-btn-text {
+  text-align: left;
+}
+
+.vip-title {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1.1;
+}
+
+.vip-subtitle {
+  display: block;
+  font-size: 0.7rem;
+  color: #FDA4AF;
+}
+
+.btn-agents-terminal {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-agents-terminal:hover {
+  background: var(--bg-card);
+  border-color: var(--neon-mint);
+  color: var(--neon-mint);
+}
+
+.badge-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--neon-mint);
+  color: #052e16;
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* 3. CATEGORIES NAV */
+.categories-nav {
+  background: var(--bg-app);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 10px 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.categories-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.categories-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.category-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.category-pill:hover {
+  background: var(--bg-card);
+  color: var(--text-white);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.category-pill.active {
+  background: var(--neon-mint);
+  color: #064E3B;
+  border-color: var(--neon-mint);
+  box-shadow: 0 0 15px var(--neon-mint-glow);
+}
+
+.category-pill.hot-pill {
+  border-color: rgba(255, 59, 92, 0.3);
+}
+
+.category-pill.hot-pill:hover,
+.category-pill.hot-pill.active {
+  background: var(--hot-coral);
+  color: #FFFFFF;
+  border-color: var(--hot-coral);
+  box-shadow: 0 0 18px var(--hot-coral-glow);
+}
+
+.category-pill.tiktok-pill {
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.category-pill.tiktok-pill:hover,
+.category-pill.tiktok-pill.active {
+  background: linear-gradient(135deg, #8B5CF6, #EC4899);
+  color: #FFFFFF;
+  box-shadow: 0 0 18px rgba(236, 72, 153, 0.3);
+}
+
+.pill-badge {
+  font-size: 0.65rem;
+  background: rgba(255, 59, 92, 0.2);
+  color: var(--hot-coral);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pill-badge-fire {
+  font-size: 0.65rem;
+  background: rgba(236, 72, 153, 0.2);
+  color: #F472B6;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+}
+
+/* 4. MAIN LAYOUT & HERO ANTI-FRAUDE */
+.main-layout {
+  padding: 24px;
+}
+
+.content-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.anti-fraud-hero {
+  margin-bottom: 28px;
+}
+
+.hero-card {
+  background: linear-gradient(135deg, #0e1a32 0%, #0d1322 100%);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius-lg);
+  padding: 28px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6);
+}
+
+.hero-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--neon-mint-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 245, 155, 0.12);
+  border: 1px solid rgba(0, 245, 155, 0.3);
+  color: var(--neon-mint);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  margin-bottom: 12px;
+}
+
+.hero-info h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-white);
+  margin-bottom: 8px;
+  max-width: 680px;
+}
+
+.hero-info p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  max-width: 640px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  text-align: center;
+  min-width: 150px;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--neon-mint);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* 5. FILTROS & TOOLBAR */
+.filters-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  margin-bottom: 24px;
+}
+
+.marketplaces-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.chip:hover {
+  color: var(--text-white);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.chip.active {
+  background: rgba(0, 245, 155, 0.12);
+  border-color: var(--neon-mint);
+  color: var(--neon-mint);
+  font-weight: 700;
+}
+
+.chip svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sort-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+}
+
+.sort-selector select {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+.sort-selector select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+/* 6. GRID DE CARDS */
+.deals-section {
+  margin-bottom: 48px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-header h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-header h3 svg {
+  color: var(--hot-coral);
+}
+
+.deals-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.deals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.deal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-fast);
+  position: relative;
+  box-shadow: var(--shadow-card);
+}
+
+.deal-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 245, 155, 0.4);
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6), 0 0 20px var(--neon-mint-glow);
+}
+
+.deal-card.is-glitch {
+  border-color: rgba(255, 59, 92, 0.4);
+}
+
+.deal-card.is-glitch:hover {
+  border-color: var(--hot-coral);
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6), 0 0 25px var(--hot-coral-glow);
+}
+
+.card-badges-top {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marketplace-badge {
+  background: rgba(13, 19, 34, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.discount-tag {
+  background: var(--hot-coral);
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 0.78rem;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 8px rgba(255, 59, 92, 0.4);
+}
+
+.card-media {
+  height: 200px;
+  background: #090e1b;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.deal-card:hover .card-media img {
+  transform: scale(1.05);
+}
+
+.price-audit-bar {
+  padding: 6px 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.audit-best {
+  background: rgba(0, 245, 155, 0.1);
+  color: var(--neon-mint);
+}
+
+.audit-normal {
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--electric-cyan);
+}
+
+.audit-warning {
+  background: rgba(255, 184, 0, 0.1);
+  color: var(--warning-amber);
+}
+
+.card-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.product-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-white);
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.price-box {
+  margin-top: auto;
+  margin-bottom: 14px;
+}
+
+.old-price {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  display: block;
+}
+
+.current-price-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.currency {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--neon-mint);
+}
+
+.main-price {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--neon-mint);
+  font-family: 'Outfit', sans-serif;
+}
+
+.payment-condition {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.coupon-tag-box {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  color: #CBD5E1;
+}
+
+.coupon-code {
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--warning-amber);
+  background: rgba(255, 184, 0, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-grab-deal {
+  flex: 1;
+  background: var(--neon-mint);
+  color: #052E16;
+  font-weight: 800;
+  font-size: 0.875rem;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-grab-deal:hover {
+  background: #34D399;
+  box-shadow: 0 4px 15px var(--neon-mint-glow);
+}
+
+.btn-alert-deal {
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.btn-alert-deal:hover {
+  background: var(--bg-surface);
+  color: var(--neon-mint);
+  border-color: var(--neon-mint);
+}
+
+/* 7. VIRAL TRENDS SECTION */
+.viral-trends-section {
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, rgba(13, 19, 34, 0.6) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin-bottom: 48px;
+}
+
+.trends-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.trends-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trend-icon-badge {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #8B5CF6, #EC4899);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+}
+
+.trends-title-wrap h3 {
+  font-size: 1.35rem;
+  color: var(--text-white);
+  font-weight: 700;
+}
+
+.trends-title-wrap p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.btn-refresh-trends {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-refresh-trends:hover {
+  color: var(--text-white);
+  border-color: var(--purple-trend);
+}
+
+.trends-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.trend-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all var(--transition-fast);
+}
+
+.trend-card:hover {
+  border-color: var(--purple-trend);
+  transform: translateY(-2px);
+}
+
+.trend-img-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #000;
+}
+
+.trend-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trend-info {
+  flex: 1;
+}
+
+.trend-tag {
+  font-size: 0.7rem;
+  color: #EC4899;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.trend-product-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-white);
+  line-height: 1.25;
+  margin: 3px 0 6px;
+}
+
+.trend-metric {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* 8. DRAWER DOS 5 AGENTES (OCULTO POR PADRÃO) */
+.agents-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  display: none;
+}
+
+.agents-drawer-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+  display: block;
+}
+
+.agents-drawer {
+  position: fixed;
+  top: 0;
+  right: -480px;
+  width: 440px;
+  max-width: 90vw;
+  height: 100vh;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border-subtle);
+  z-index: 1001;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.agents-drawer.open {
+  right: 0;
+}
+
+.drawer-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.drawer-title svg {
+  color: var(--neon-mint);
+  width: 26px;
+  height: 26px;
+}
+
+.drawer-title h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.drawer-title p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.btn-close-drawer {
+  color: var(--text-secondary);
+}
+
+.btn-close-drawer:hover {
+  color: var(--text-white);
+}
+
+.drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.agent-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+
+.agent-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.agent-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agent-avatar.scout { background: rgba(255, 59, 92, 0.15); color: var(--hot-coral); }
+.agent-avatar.backend { background: rgba(0, 245, 155, 0.15); color: var(--neon-mint); }
+.agent-avatar.funnel { background: rgba(0, 212, 255, 0.15); color: var(--electric-cyan); }
+.agent-avatar.trends { background: rgba(139, 92, 246, 0.15); color: var(--purple-trend); }
+.agent-avatar.frontend { background: rgba(255, 184, 0, 0.15); color: var(--warning-amber); }
+
+.agent-meta h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.agent-status {
+  font-size: 0.7rem;
+}
+
+.agent-status.online {
+  color: var(--neon-mint);
+}
+
+.agent-log {
+  background: #060913;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: #94A3B8;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-line span {
+  color: #64748B;
+}
+
+.log-line code {
+  color: var(--neon-mint);
+  background: rgba(0, 245, 155, 0.1);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.log-line.highlight {
+  color: #FCA5A5;
+}
+
+/* 9. MODAIS */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius-lg);
+  max-width: 500px;
+  width: 100%;
+  padding: 32px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  animation: modalEnter 0.25s ease-out;
+}
+
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  color: var(--text-muted);
+}
+
+.modal-close-btn:hover {
+  color: var(--text-white);
+}
+
+.modal-header-vip {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.vip-icon-shine {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, rgba(255, 59, 92, 0.2), rgba(255, 184, 0, 0.2));
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hot-coral);
+}
+
+.modal-header-vip h3 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--text-white);
+  margin-bottom: 8px;
+}
+
+.modal-header-vip p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.modal-channels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.channel-choice-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all var(--transition-fast);
+}
+
+.channel-choice-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--neon-mint);
+  background: var(--bg-card-hover);
+}
+
+.telegram-choice .channel-icon {
+  background: #0088cc;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.whatsapp-choice .channel-icon {
+  background: #25D366;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.channel-info {
+  flex: 1;
+}
+
+.channel-name {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.channel-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.channel-arrow {
+  color: var(--text-muted);
+}
+
+.modal-guarantee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--neon-mint);
+}
+
+/* Modal Sniper */
+.badge-sniper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 245, 155, 0.1);
+  color: var(--neon-mint);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  margin-bottom: 8px;
+}
+
+.modal-header-alert h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-white);
+  margin-bottom: 6px;
+}
+
+.modal-header-alert p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+.product-mini-preview {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.input-currency-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-prefix {
+  position: absolute;
+  left: 14px;
+  color: var(--neon-mint);
+  font-weight: 700;
+}
+
+.input-currency-wrap input {
+  padding-left: 42px !important;
+}
+
+.form-group input {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  color: var(--text-white);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--neon-mint);
+  box-shadow: 0 0 0 2px var(--neon-mint-glow);
+}
+
+.btn-submit-alert {
+  width: 100%;
+  background: var(--neon-mint);
+  color: #064e3b;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.btn-submit-alert:hover {
+  background: #34d399;
+  box-shadow: 0 4px 15px var(--neon-mint-glow);
+}
+
+/* 10. TOAST */
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(18, 26, 47, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 59, 92, 0.5);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1200;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--hot-coral-glow);
+  max-width: 380px;
+  animation: slideToast 0.3s ease;
+}
+
+@keyframes slideToast {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.toast-icon {
+  background: rgba(255, 59, 92, 0.2);
+  color: var(--hot-coral);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-body h5 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.toast-body p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.toast-close-btn {
+  color: var(--text-muted);
+}
+
+.toast-close-btn:hover {
+  color: var(--text-white);
+}
+
+/* 11. FOOTER */
+.main-footer {
+  background: #05070e;
+  border-top: 1px solid var(--border-subtle);
+  padding: 60px 24px 24px;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.logo-icon-wrapper.mini {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 12px;
+}
+
+.footer-brand h4 {
+  font-size: 1.3rem;
+  color: var(--text-white);
+  margin-bottom: 8px;
+}
+
+.footer-brand p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.footer-links h5, .footer-contact h5 {
+  font-size: 0.9rem;
+  color: var(--text-white);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links ul li {
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.footer-links ul li:hover {
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.footer-contact p {
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.btn-footer-vip {
+  background: linear-gradient(135deg, #1E1B4B, #311042);
+  border: 1px solid rgba(255, 59, 92, 0.4);
+  color: #FFFFFF;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-footer-vip:hover {
+  border-color: var(--hot-coral);
+  box-shadow: 0 4px 15px var(--hot-coral-glow);
+}
+
+.footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 12. RESPONSIVIDADE */
+@media (max-width: 992px) {
+  .hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-stats {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    flex-wrap: wrap;
+  }
+  .search-wrapper {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+  }
+  .hero-info h2 {
+    font-size: 1.35rem;
+  }
+  .stat-box {
+    min-width: unset;
+    flex: 1;
+  }
+  .footer-container {
+    grid-template-columns: 1fr;
+  }
+}
+.btn-converter-nav {
+  background: rgba(0, 245, 155, 0.12);
+  border: 1px solid var(--neon-mint);
+  color: var(--neon-mint);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-converter-nav:hover {
+  background: var(--neon-mint);
+  color: #064E3B;
+  box-shadow: 0 0 15px var(--neon-mint-glow);
+  transform: translateY(-2px);
+}
+  </style>
+</head>
+<body class="dark-theme">
+
+  <!-- BARRA DE STATUS EM TEMPO REAL -->
+  <aside class="live-ticker-bar" aria-label="Status do Radar">
+    <div class="ticker-content">
+      <div class="ticker-status">
+        <span class="pulse-dot"></span>
+        <strong id="radar-status-text">RADAR IA ATIVO:</strong> 
+        <span id="ticker-metrics">1.489 ofertas checadas nos últimos 5 min • 0 links expirados • 12 marketplaces conectados</span>
+      </div>
+      <div class="ticker-highlight" id="glitch-banner">
+        <span class="badge-glitch"><i data-lucide="zap"></i> BUG DETECTADO</span>
+        <span class="glitch-text" id="glitch-text">Carregando último bug...</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CABEÇALHO PRINCIPAL -->
+  <header class="main-header">
+    <div class="header-container">
+      
+      <!-- LOGO: RADAR ANIMADO COM IDENTIDADE ÚNICA -->
+      <div class="brand-logo">
+
+        <!-- SVG RADAR SONAR ANIMADO -->
+        <div class="radar-logo-wrap">
+          <!-- Ondas de sonar -->         
+          <div class="radar-sonar-ring"></div>
+          <div class="radar-sonar-ring"></div>
+          <div class="radar-sonar-ring"></div>
+          <!-- Anel base -->
+          <div class="radar-outer-ring"></div>
+
+          <!-- Radar SVG principal -->
+          <svg class="radar-svg-main" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Grade -->  
+            <line x1="50" y1="12" x2="50" y2="88" stroke="rgba(0,245,155,0.1)" stroke-width="0.8"/>
+            <line x1="12" y1="50" x2="88" y2="50" stroke="rgba(0,245,155,0.1)" stroke-width="0.8"/>
+            <circle cx="50" cy="50" r="35" stroke="rgba(0,245,155,0.1)" stroke-width="0.8"/>
+            <circle cx="50" cy="50" r="20" stroke="rgba(0,245,155,0.08)" stroke-width="0.8"/>
+
+            <!-- Sweep (varredura giratória) -->
+            <g class="radar-sweep-arm">
+              <defs>
+                <radialGradient id="swpGrd" cx="50%" cy="100%" r="100%">
+                  <stop offset="0%" stop-color="#00F59B" stop-opacity="0.55"/>
+                  <stop offset="100%" stop-color="#00F59B" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <path d="M50 50 L50 15 A35 35 0 0 1 74.6 29.6 Z" fill="url(#swpGrd)"/>
+              <line x1="50" y1="50" x2="50" y2="15" stroke="#00F59B" stroke-width="1.5" opacity="0.9"/>
+            </g>
+
+            <!-- Tag de desconto ao centro -->
+            <path d="M43 40 L57 40 L63 50 L57 60 L43 60 Z"
+              fill="rgba(0,245,155,0.12)" stroke="#00F59B" stroke-width="1.2" stroke-linejoin="round"/>
+            <circle cx="47" cy="45" r="1.5" stroke="#00F59B" stroke-width="1"/>
+            <text x="50" y="55" font-family="Outfit" font-size="8" font-weight="900"
+              fill="#00F59B" text-anchor="middle">%</text>
+
+            <!-- Ponto central -->
+            <circle cx="50" cy="50" r="2" fill="#00F59B"
+              style="filter:drop-shadow(0 0 3px #00F59B)"/>
+          </svg>
+
+          <!-- Blips de detecção -->
+          <div class="radar-logo-blip b1"></div>
+          <div class="radar-logo-blip b2"></div>
+        </div>
+
+        <!-- Texto da Marca -->
+        <div class="logo-text">
+          <h1>Radar<span>Promo</span></h1>
+          <p class="tagline">Inteligência em Ofertas & Bugs</p>
+        </div>
+
+      </div>
+
+      <!-- BUSCADOR -->
+      <div class="search-wrapper">
+        <i data-lucide="search" class="search-icon"></i>
+        <input type="text" id="main-search-input" placeholder="Buscar produtos, marcas, cupons ou colar link de marketplace..." autocomplete="off">
+        <button class="clear-search-btn" id="clear-search-btn" style="display: none;"><i data-lucide="x"></i></button>
+        <span class="search-shortcut">Ctrl + K</span>
+      </div>
+
+      <!-- AÇÕES -->
+      <div class="header-actions">
+        <a href="conversor-afiliados.html" class="btn-converter-nav" title="Gerar e converter links de afiliado">
+          <i data-lucide="wand-2"></i>
+          <span>Gerar Links</span>
+        </a>
+
+        <button class="btn-vip-channel" id="open-vip-modal">
+          <div class="vip-pulse-icon"><i data-lucide="flame"></i></div>
+          <div class="vip-btn-text">
+            <span class="vip-title">Grupo VIP Alertas</span>
+            <span class="vip-subtitle">WhatsApp & Telegram</span>
+          </div>
+        </button>
+
+        <button class="btn-agents-terminal" id="toggle-agents-drawer" title="Ver os 5 Agentes de IA operando">
+          <i data-lucide="bot"></i>
+          <span class="badge-count">5</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CATEGORIAS -->
+  <nav class="categories-nav">
+    <div class="categories-container" id="category-pills">
+      <button class="category-pill active" data-category="all">
+        <i data-lucide="sparkles"></i>
+        <span>Todos os Achados</span>
+      </button>
+      <button class="category-pill hot-pill" data-category="bugs">
+        <i data-lucide="zap"></i>
+        <span>Bugs & Erros de Preço</span>
+        <span class="pill-badge">Urgente</span>
+      </button>
+      <button class="category-pill tiktok-pill" data-category="tiktok">
+        <i data-lucide="play-circle"></i>
+        <span>Bombando no TikTok</span>
+        <span class="pill-badge-fire">Viral</span>
+      </button>
+      <button class="category-pill" data-category="tech">
+        <i data-lucide="smartphone"></i>
+        <span>Tech & Setup</span>
+      </button>
+      <button class="category-pill" data-category="fashion">
+        <i data-lucide="shirt"></i>
+        <span>Moda & Estilo</span>
+      </button>
+      <button class="category-pill" data-category="home">
+        <i data-lucide="home"></i>
+        <span>Casa & Eletro</span>
+      </button>
+      <button class="category-pill" data-category="games">
+        <i data-lucide="gamepad-2"></i>
+        <span>Games & Geek</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="main-layout">
+    <div class="content-wrapper">
+
+      <!-- BANNER DE DIFERENCIAL -->
+      <section class="anti-fraud-hero">
+        <div class="hero-card">
+          <div class="hero-info">
+            <span class="hero-badge"><i data-lucide="shield-check"></i> 100% Auditado por IA</span>
+            <h2>Chega de ofertas falsas e links que expiram em silêncio.</h2>
+            <p>O <strong>RadarPromo</strong> monitora 90 dias de histórico em tempo real e carimba se o desconto é a verdadeira <strong>Mínima Histórica</strong> ou tentativa de <em>Metade do Dobro</em>.</p>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-box">
+              <span class="stat-number" id="stats-money-saved">R$ 142.890</span>
+              <span class="stat-label">Economizados este mês</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">Links Verificados 24/7</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BARRA DE FILTROS -->
+      <div class="filters-toolbar">
+        <div class="filter-group marketplaces-filter" id="marketplace-chips">
+          <span class="filter-label">Marketplace:</span>
+          <button class="chip active" data-marketplace="all">Todos</button>
+          <button class="chip" data-marketplace="amazon"><i data-lucide="shopping-bag"></i> Amazon</button>
+          <button class="chip" data-marketplace="mercadolivre"><i data-lucide="box"></i> Mercado Livre</button>
+          <button class="chip" data-marketplace="shopee"><i data-lucide="tag"></i> Shopee</button>
+          <button class="chip" data-marketplace="magalu"><i data-lucide="package"></i> Magalu</button>
+          <button class="chip" data-marketplace="aliexpress"><i data-lucide="globe"></i> AliExpress</button>
+        </div>
+
+        <div class="filter-group-right">
+          <div class="sort-selector">
+            <label for="sort-select"><i data-lucide="arrow-up-down"></i></label>
+            <select id="sort-select">
+              <option value="recent">Mais Recentes</option>
+              <option value="discount">Maior % de Desconto</option>
+              <option value="lowest-price">Menor Preço</option>
+              <option value="views">Mais Populares</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRID DE OFERTAS -->
+      <section class="deals-section">
+        <div class="section-header">
+          <h3 id="section-title"><i data-lucide="flame"></i> Melhores Ofertas Auditadas</h3>
+          <span class="deals-count" id="deals-count-label">Exibindo 9 promoções</span>
+        </div>
+
+        <div class="deals-grid" id="deals-grid">
+          <!-- Renderizado via JS -->
+        </div>
+
+        <div class="empty-state" id="empty-state" style="display: none;">
+          <i data-lucide="search-x" class="empty-icon"></i>
+          <h4>Nenhuma oferta encontrada com esses filtros</h4>
+          <p>Tente buscar por termos mais genéricos ou desmarque os filtros selecionados.</p>
+          <button class="btn-reset-filters" id="reset-filters-btn">Limpar Filtros</button>
+        </div>
+      </section>
+
+      <!-- TENDÊNCIAS TIKTOK -->
+      <section class="viral-trends-section">
+        <div class="trends-header">
+          <div class="trends-title-wrap">
+            <span class="trend-icon-badge"><i data-lucide="trending-up"></i></span>
+            <div>
+              <h3>Radar de Tendências & Virais</h3>
+              <p>O que mais está bombando no TikTok, Instagram e Google Trends em Moda e Tecnologia.</p>
+            </div>
+          </div>
+          <button class="btn-refresh-trends" id="refresh-trends-btn" title="Atualizar tendências">
+            <i data-lucide="rotate-cw"></i>
+          </button>
+        </div>
+
+        <div class="trends-cards-container" id="trends-container">
+          <!-- Renderizado via JS -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- DRAWER DOS 5 AGENTES (LATERAL) -->
+  <div class="agents-drawer-overlay" id="agents-overlay"></div>
+  <aside class="agents-drawer" id="agents-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <i data-lucide="cpu"></i>
+        <div>
+          <h3>Sala de Máquinas dos 5 Agentes</h3>
+          <p>Coordenação autônoma em tempo real</p>
+        </div>
+      </div>
+      <button class="btn-close-drawer" id="close-agents-drawer"><i data-lucide="x"></i></button>
+    </div>
+
+    <div class="drawer-content">
+      <div class="agent-card">
+        <div class="agent-head">
+          <div class="agent-avatar scout"><i data-lucide="binoculars"></i></div>
+          <div class="agent-meta">
+            <h4>1. Agente Rastreador 24/7 (Scout)</h4>
+            <span class="agent-status online">Executando varreduras a cada 45s</span>
+          </div>
+        </div>
+        <div class="agent-log" id="scout-log">
+          <p class="log-line"><span>23:54:12</span> Varrendo API Shopee & Amazon...</p>
+          <p class="log-line highlight"><span>23:54:30</span> 🚨 Anomalia de preço detectada: Fone Sony WH-1000XM5 (-68%)</p>
+        </div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-head">
+          <div class="agent-avatar backend"><i data-lucide="database"></i></div>
+          <div class="agent-meta">
+            <h4>2. Agente Backend & Links</h4>
+            <span class="agent-status online">Injetor de tags & Mascarador</span>
+          </div>
+        </div>
+        <div class="agent-log" id="backend-log">
+          <p class="log-line"><span>23:54:32</span> Injetando tag de afiliado: <code>radarpromo-20</code></p>
+          <p class="log-line"><span>23:54:33</span> Gerada URL rastreável: <code>/ir/sony-xm5-glitch</code></p>
+        </div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-head">
+          <div class="agent-avatar funnel"><i data-lucide="users"></i></div>
+          <div class="agent-meta">
+            <h4>3. Agente de Leads & Funil</h4>
+            <span class="agent-status online">Orquestrador de Canais VIP</span>
+          </div>
+        </div>
+        <div class="agent-log" id="funnel-log">
+          <p class="log-line"><span>23:54:35</span> Disparo enviado para 14.820 membros do Grupo VIP Telegram</p>
+          <p class="log-line"><span>23:54:40</span> 42 Alertas individuais de "Fone Sony" acionados via WhatsApp</p>
+        </div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-head">
+          <div class="agent-avatar trends"><i data-lucide="line-chart"></i></div>
+          <div class="agent-meta">
+            <h4>4. Agente de Tendências</h4>
+            <span class="agent-status online">Análise de Redes & Desejo</span>
+          </div>
+        </div>
+        <div class="agent-log" id="trends-log">
+          <p class="log-line"><span>23:54:00</span> Termo "Jaqueta Puffer Couro" subiu +340% no TikTok</p>
+          <p class="log-line"><span>23:54:10</span> Requisitando que o Rastreador busque melhores cupons na Zara/Shopee</p>
+        </div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-head">
+          <div class="agent-avatar frontend"><i data-lucide="layout"></i></div>
+          <div class="agent-meta">
+            <h4>5. Agente Frontend (UI/UX)</h4>
+            <span class="agent-status online">Taxa de Conversão & UX</span>
+          </div>
+        </div>
+        <div class="agent-log" id="frontend-log">
+          <p class="log-line"><span>23:54:45</span> Carregamento médio: 0.38s • Core Web Vitals: 99/100</p>
+          <p class="log-line"><span>23:54:50</span> Botão "Pegar Promoção" registrando 18.4% de CTR</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MODAL VIP -->
+  <div class="modal-backdrop" id="vip-modal" style="display: none;">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="close-vip-modal"><i data-lucide="x"></i></button>
+      
+      <div class="modal-header-vip">
+        <div class="vip-icon-shine"><i data-lucide="bell-ring"></i></div>
+        <h3>Entre no Grupo VIP de Ofertas Relâmpago</h3>
+        <p>Receba bugs de preço e cupons secretos <strong>em menos de 30 segundos</strong> direto no seu celular antes que esgotem.</p>
+      </div>
+
+      <div class="modal-channels-list">
+        <a href="#telegram" class="channel-choice-btn telegram-choice" onclick="alert('Simulação: Redirecionando para o Canal VIP do Telegram!');">
+          <div class="channel-icon"><i data-lucide="send"></i></div>
+          <div class="channel-info">
+            <span class="channel-name">Canal VIP no Telegram</span>
+            <span class="channel-desc">Sem limite de membros • Alertas instantâneos 24h</span>
+          </div>
+          <span class="channel-arrow"><i data-lucide="chevron-right"></i></span>
+        </a>
+
+        <a href="#whatsapp" class="channel-choice-btn whatsapp-choice" onclick="alert('Simulação: Redirecionando para a Comunidade Oficial do WhatsApp!');">
+          <div class="channel-icon"><i data-lucide="message-circle"></i></div>
+          <div class="channel-info">
+            <span class="channel-name">Comunidade WhatsApp</span>
+            <span class="channel-desc">Notificações silenciosas com os melhores achados</span>
+          </div>
+          <span class="channel-arrow"><i data-lucide="chevron-right"></i></span>
+        </a>
+      </div>
+
+      <div class="modal-guarantee">
+        <i data-lucide="check-circle-2"></i>
+        <span>100% gratuito • Sem spam • Links limpos e auditados</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SNIPER DE PREÇO -->
+  <div class="modal-backdrop" id="alert-modal" style="display: none;">
+    <div class="modal-card alert-modal-card">
+      <button class="modal-close-btn" id="close-alert-modal"><i data-lucide="x"></i></button>
+
+      <div class="modal-header-alert">
+        <span class="badge-sniper"><i data-lucide="crosshair"></i> SNIPER DE PREÇO</span>
+        <h3 id="alert-product-title">Criar Alerta de Preço</h3>
+        <p>Avisaremos você no exato instante em que o produto atingir o valor desejado ou surgir um cupom novo.</p>
+      </div>
+
+      <div class="alert-form-body">
+        <div class="product-mini-preview" id="alert-mini-preview"></div>
+
+        <form id="price-alert-form">
+          <div class="form-group">
+            <label for="target-price-input">Me avise quando o preço estiver abaixo de:</label>
+            <div class="input-currency-wrap">
+              <span class="currency-prefix">R$</span>
+              <input type="number" id="target-price-input" required placeholder="0,00" step="0.01">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lead-whatsapp">Seu WhatsApp para receber o link:</label>
+            <input type="tel" id="lead-whatsapp" placeholder="(11) 99999-9999" required>
+          </div>
+
+          <button type="submit" class="btn-submit-alert">
+            <i data-lucide="bell"></i>
+            <span>Ativar Meu Sniper de Preço</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST FLUTUANTE -->
+  <div class="toast-notification" id="live-toast" style="display: none;">
+    <div class="toast-icon"><i data-lucide="zap"></i></div>
+    <div class="toast-body">
+      <h5 id="toast-title">Alerta de Bug!</h5>
+      <p id="toast-desc">Carregando...</p>
+    </div>
+    <button class="toast-close-btn" id="close-toast"><i data-lucide="x"></i></button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="logo-icon-wrapper mini">
+          <i data-lucide="radar"></i>
+        </div>
+        <h4>RadarPromo</h4>
+        <p>O primeiro portal de promoções inteligente do Brasil operado por IA autônoma para garantir economia real e zero ofertas falsas.</p>
+      </div>
+
+      <div class="footer-links">
+        <h5>Marketplaces Conectados</h5>
+        <ul>
+          <li>Amazon Associates</li>
+          <li>Mercado Livre Afiliados</li>
+          <li>Shopee Open Platform</li>
+          <li>Magazine Luiza (Magalu)</li>
+          <li>AliExpress Portals</li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h5>Transparência</h5>
+        <ul>
+          <li>Auditoria Anti-Metade do Dobro</li>
+          <li>Política de Links de Afiliados</li>
+          <li>Termos de Uso</li>
+          <li>Privacidade de Dados</li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h5>Participe dos Canais VIP</h5>
+        <p>Mais de 50.000 pessoas economizando todos os dias.</p>
+        <button class="btn-footer-vip" id="open-vip-footer"><i data-lucide="flame"></i> Entrar nos Grupos VIP</button>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 RadarPromo. Todos os direitos reservados. Links auditados em tempo real.</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT EMBUTIDO TOTALMENTE AUTÔNOMO -->
+  <script>
+    const dealsData = [
+      {
+        id: 1,
+        title: "Headphone Sony WH-1000XM5 com Cancelamento de Ruído Ativo (Preto)",
+        marketplace: "amazon",
+        marketplaceName: "Amazon",
+        category: "bugs",
+        tags: ["tech", "bugs"],
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
+        oldPrice: 2499.00,
+        currentPrice: 799.90,
+        discountPercent: 68,
+        auditScore: "best",
+        auditText: "MÍNIMA HISTÓRICA COMPROVADA (-68%)",
+        couponCode: "SONYGLITCH60",
+        isGlitch: true,
+        affiliateSlug: "sony-wh1000xm5-glitch",
+        stockStatus: "🚨 Apenas 4 unidades restantes no estoque",
+        paymentCondition: "ou 10x de R$ 79,99 sem juros",
+        views: 4520,
+        createdAt: new Date(Date.now() - 4 * 60 * 1000)
+      },
+      {
+        id: 2,
+        title: "Jaqueta Puffer Streetwear Oversized Térmica Impermeável Unissex",
+        marketplace: "shopee",
+        marketplaceName: "Shopee",
+        category: "fashion",
+        tags: ["fashion", "tiktok"],
+        image: "https://images.unsplash.com/photo-1544441893-675973e31985?w=600&auto=format&fit=crop&q=80",
+        oldPrice: 389.90,
+        currentPrice: 139.90,
+        discountPercent: 64,
+        auditScore: "best",
+        auditText: "VIRAL NO TIKTOK (3.4M VIEWS)",
+        couponCode: "PUFFERVIBE",
+        isGlitch: false,
+        affiliateSlug: "jaqueta-puffer-viral-shopee",
+        stockStatus: "Estoque médio no centro de distribuição",
+        paymentCondition: "Frete Grátis com Cupom Shopee",
+        views: 8930,
+        createdAt: new Date(Date.now() - 15 * 60 * 1000)
+      },
+      {
+        id: 3,
+        title: "Apple iPhone 15 Pro (128 GB) Titânio Natural - Tela Super Retina XDR",
+        marketplace: "mercadolivre",
+        marketplaceName: "Mercado Livre",
+        category: "tech",
+        tags: ["tech"],
+        image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80",
+        oldPrice: 7299.00,
+        currentPrice: 5399.10,
+        discountPercent: 26,
+        auditScore: "best",
+        auditText: "MENOR PREÇO EM 180 DIAS",
+        couponCode: "APPLEOFF10",
+        isGlitch: false,
+        affiliateSlug: "iphone-15-pro-titanio-ml",
+        stockStatus: "Vendido pela Loja Oficial Apple",
+        paymentCondition: "Em 10x de R$ 539,91 sem juros no cartão",
+        views: 12400,
+        createdAt: new Date(Date.now() - 32 * 60 * 1000)
+      },
+      {
+        id: 4,
+        title: "Air Fryer Forno 12L Digital com Visor Transparente Mondial",
+        marketplace: "magalu",
+        marketplaceName: "Magalu",
+        category: "home",
+        tags: ["home"],
+        image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80",
+        oldPrice: 799.00,
+        currentPrice: 399.90,
+        discountPercent: 50,
+        auditScore: "normal",
+        auditText: "DESCONTO REAL AUDITADO (-50%)",
+        couponCode: "MAGALU50",
+        isGlitch: false,
+        affiliateSlug: "airfryer-mondial-12l-magalu",
+        stockStatus: "Entrega Rápida Magalu",
+        paymentCondition: "À vista no Pix com 10% adicional",
+        views: 3120,
+        createdAt: new Date(Date.now() - 50 * 60 * 1000)
+      },
+      {
+        id: 5,
+        title: "Console PlayStation 5 Slim Edição Digital + 2 Jogos Exclusivos",
+        marketplace: "amazon",
+        marketplaceName: "Amazon",
+        category: "games",
+        tags: ["games", "tech"],
+        image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=600&auto=format&fit=crop&q=80",
+        oldPrice: 3999.00,
+        currentPrice: 3199.00,
+        discountPercent: 20,
+        auditScore: "best",
+        auditText: "MÍNIMA HISTÓRICA COMPROVADA",
+        couponCode: "PS5SLIMAMAZON",
+        isGlitch: false,
+        affiliateSlug: "ps5-slim-digital-amazon",
+        stockStatus: "Envio Imediato Amazon Prime",
+        paymentCondition: "Em até 10x sem juros",
+        views: 9400,
+        createdAt: new Date(Date.now() - 65 * 60 * 1000)
+      },
+      {
+        id: 6,
+        title: "Vestido Midi Canelado Manga Longa Minimalista Chic (Estilo Old Money)",
+        marketplace: "shopee",
+        marketplaceName: "Shopee",
+        category: "fashion",
+        tags: ["fashion", "tiktok"],
+        image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600&auto=format&fit=crop&q=80",
+        oldPrice: 199.90,
+        currentPrice: 69.90,
+        discountPercent: 65,
+        auditScore: "best",
+        auditText: "TREND TIKTOK #OLDMONEY",
+        couponCode: "CHICSTYLE",
+        isGlitch: false,
+        affiliateSlug: "vestido-midi-old-money-shopee",
+        stockStatus: "Avaliação 4.9/5 estrelas (2.800 vendas)",
+        paymentCondition: "Frete Grátis acima de R$ 39",
+        views: 6720,
+        createdAt: new Date(Date.now() - 80 * 60 * 1000)
+      },
+      {
+        id: 7,
+        title: "Teclado Mecânico Gamer Sem Fio RGB Hot-Swap 75% Switch Red",
+        marketplace: "aliexpress",
+        marketplaceName: "AliExpress",
+        category: "tech",
+        tags: ["tech", "games", "tiktok"],
+        image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
+        oldPrice: 380.00,
+        currentPrice: 145.00,
+        discountPercent: 62,
+        auditScore: "best",
+        auditText: "REMESSA CONFORME JÁ INCLUSA",
+        couponCode: "ALISETUP30",
+        isGlitch: false,
+        affiliateSlug: "teclado-mecanico-aliexpress",
+        stockStatus: "Estoque no Brasil sem taxa extra",
+        paymentCondition: "Em até 3x sem juros",
+        views: 5210,
+        createdAt: new Date(Date.now() - 95 * 60 * 1000)
+      },
+      {
+        id: 8,
+        title: "Robô Aspirador de Pó Inteligente com Mapeamento Laser e Passa Pano",
+        marketplace: "mercadolivre",
+        marketplaceName: "Mercado Livre",
+        category: "home",
+        tags: ["home", "tech"],
+        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80",
+        oldPrice: 1899.00,
+        currentPrice: 1199.00,
+        discountPercent: 37,
+        auditScore: "normal",
+        auditText: "MENOR PREÇO DO MÊS",
+        couponCode: "ROBOTCLEAN",
+        isGlitch: false,
+        affiliateSlug: "robo-aspirador-ml",
+        stockStatus: "Entrega FULL amanhã",
+        paymentCondition: "12x de R$ 99,91 sem juros",
+        views: 4100,
+        createdAt: new Date(Date.now() - 110 * 60 * 1000)
+      },
+      {
+        id: 9,
+        title: "Tênis Esportivo Casual Amortecimento Nuvem Ultra Conforto",
+        marketplace: "shopee",
+        marketplaceName: "Shopee",
+        category: "fashion",
+        tags: ["fashion"],
+        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80",
+        oldPrice: 249.90,
+        currentPrice: 89.90,
+        discountPercent: 64,
+        auditScore: "best",
+        auditText: "PROMOÇÃO RELÂMPAGO SHOPEE",
+        couponCode: "TENISNUVEM",
+        isGlitch: false,
+        affiliateSlug: "tenis-esportivo-shopee",
+        stockStatus: "Mais de 10.000 pares vendidos",
+        paymentCondition: "Parcelamento disponível",
+        views: 7300,
+        createdAt: new Date(Date.now() - 120 * 60 * 1000)
+      }
+    ];
+
+    const trendsData = [
+      {
+        id: "t1",
+        tag: "#SetupMinimalista • +420% no TikTok",
+        productName: "Luminária Barra de LED para Monitor com Sensor",
+        metric: "Monitorado por Agente de Tendências • 1.2M menções",
+        image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=300&auto=format&fit=crop&q=80"
+      },
+      {
+        id: "t2",
+        tag: "#OldMoney • Moda Viral",
+        productName: "Camisa Linho Manga Curta Gola Padre",
+        metric: "Pico de buscas no Google Trends Brasil",
+        image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=300&auto=format&fit=crop&q=80"
+      },
+      {
+        id: "t3",
+        tag: "#AchadinhosShopee • 5.1M Views",
+        productName: "Garrafa Térmica Inteligente com Display Digital",
+        metric: "Conversão de cliques acima de 24%",
+        image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=300&auto=format&fit=crop&q=80"
+      },
+      {
+        id: "t4",
+        tag: "#TechReview • Trending no YouTube",
+        productName: "Microfone Condensador USB para Podcast/Stream",
+        metric: "Menor preço encontrado no AliExpress",
+        image: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=300&auto=format&fit=crop&q=80"
+      }
+    ];
+
+    let currentCategory = "all";
+    let currentMarketplace = "all";
+    let currentSearchQuery = "";
+    let currentSort = "recent";
+    let activeAlertProduct = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+      renderDeals();
+      renderTrends();
+      setupEventListeners();
+      startAutonomousAgentSimulation();
+      updateGlitchBanner();
+    });
+
+    function renderDeals() {
+      const dealsGrid = document.getElementById("deals-grid");
+      const emptyState = document.getElementById("empty-state");
+      const dealsCountLabel = document.getElementById("deals-count-label");
+
+      let filtered = dealsData.filter(deal => {
+        if (currentCategory === "bugs") {
+          if (!deal.isGlitch && !deal.tags.includes("bugs")) return false;
+        } else if (currentCategory === "tiktok") {
+          if (!deal.tags.includes("tiktok")) return false;
+        } else if (currentCategory !== "all" && !deal.tags.includes(currentCategory)) {
+          return false;
+        }
+
+        if (currentMarketplace !== "all" && deal.marketplace !== currentMarketplace) {
+          return false;
+        }
+
+        if (currentSearchQuery.trim() !== "") {
+          const q = currentSearchQuery.toLowerCase();
+          const matchTitle = deal.title.toLowerCase().includes(q);
+          const matchStore = deal.marketplaceName.toLowerCase().includes(q);
+          const matchCoupon = deal.couponCode && deal.couponCode.toLowerCase().includes(q);
+          if (!matchTitle && !matchStore && !matchCoupon) return false;
+        }
+
+        return true;
+      });
+
+      if (currentSort === "discount") {
+        filtered.sort((a, b) => b.discountPercent - a.discountPercent);
+      } else if (currentSort === "lowest-price") {
+        filtered.sort((a, b) => a.currentPrice - b.currentPrice);
+      } else if (currentSort === "views") {
+        filtered.sort((a, b) => b.views - a.views);
+      } else {
+        filtered.sort((a, b) => b.createdAt - a.createdAt);
+      }
+
+      dealsCountLabel.textContent = `Exibindo ${filtered.length} promoções auditadas`;
+
+      if (filtered.length === 0) {
+        dealsGrid.innerHTML = "";
+        emptyState.style.display = "block";
+        return;
+      }
+
+      emptyState.style.display = "none";
+      dealsGrid.innerHTML = filtered.map(deal => createDealCardHTML(deal)).join("");
+
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+      bindDealCardEvents();
+    }
+
+    function createDealCardHTML(deal) {
+      const formattedOldPrice = deal.oldPrice.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+      const formattedPrice = deal.currentPrice.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+
+      let auditClass = "audit-best";
+      let auditIcon = "shield-check";
+      if (deal.auditScore === "normal") {
+        auditClass = "audit-normal";
+        auditIcon = "check";
+      } else if (deal.auditScore === "warning") {
+        auditClass = "audit-warning";
+        auditIcon = "alert-triangle";
+      }
+
+      return `
+        <article class="deal-card ${deal.isGlitch ? 'is-glitch' : ''}" data-id="${deal.id}">
+          <div class="card-badges-top">
+            <span class="marketplace-badge">
+              <i data-lucide="shopping-bag"></i> ${deal.marketplaceName}
+            </span>
+            <span class="discount-tag">-${deal.discountPercent}% OFF</span>
+          </div>
+
+          <div class="card-media">
+            <img src="${deal.image}" alt="${deal.title}" loading="lazy">
+          </div>
+
+          <div class="price-audit-bar ${auditClass}">
+            <i data-lucide="${auditIcon}"></i>
+            <span>${deal.auditText}</span>
+          </div>
+
+          <div class="card-content">
+            <h4 class="product-title" title="${deal.title}">${deal.title}</h4>
+
+            <div class="price-box">
+              <span class="old-price">R$ ${formattedOldPrice}</span>
+              <div class="current-price-wrap">
+                <span class="currency">R$</span>
+                <span class="main-price">${formattedPrice}</span>
+              </div>
+              <span class="payment-condition">${deal.paymentCondition}</span>
+            </div>
+
+            ${deal.couponCode ? `
+              <div class="coupon-tag-box">
+                <span>Cupom verificado:</span>
+                <span class="coupon-code">${deal.couponCode}</span>
+              </div>
+            ` : ''}
+
+            <div class="card-actions">
+              <button class="btn-grab-deal" data-affiliate="${deal.affiliateSlug}" data-title="${deal.title}" data-store="${deal.marketplaceName}">
+                <i data-lucide="external-link"></i>
+                <span>Pegar Promoção</span>
+              </button>
+              
+              <button class="btn-alert-deal" data-id="${deal.id}" title="Criar Sniper de Preço para este produto">
+                <i data-lucide="bell"></i>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderTrends() {
+      const container = document.getElementById("trends-container");
+      container.innerHTML = trendsData.map(trend => `
+        <div class="trend-card">
+          <div class="trend-img-wrap">
+            <img src="${trend.image}" alt="${trend.productName}">
+          </div>
+          <div class="trend-info">
+            <span class="trend-tag">${trend.tag}</span>
+            <h5 class="trend-product-name">${trend.productName}</h5>
+            <span class="trend-metric">${trend.metric}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function setupEventListeners() {
+      const categoryPills = document.querySelectorAll(".category-pill");
+      categoryPills.forEach(pill => {
+        pill.addEventListener("click", () => {
+          categoryPills.forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          currentCategory = pill.dataset.category;
+          renderDeals();
+        });
+      });
+
+      const marketplaceChips = document.querySelectorAll(".chip");
+      marketplaceChips.forEach(chip => {
+        chip.addEventListener("click", () => {
+          marketplaceChips.forEach(c => c.classList.remove("active"));
+          chip.classList.add("active");
+          currentMarketplace = chip.dataset.marketplace;
+          renderDeals();
+        });
+      });
+
+      const searchInput = document.getElementById("main-search-input");
+      const clearBtn = document.getElementById("clear-search-btn");
+
+      searchInput.addEventListener("input", (e) => {
+        currentSearchQuery = e.target.value;
+        clearBtn.style.display = currentSearchQuery ? "flex" : "none";
+        renderDeals();
+      });
+
+      clearBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        currentSearchQuery = "";
+        clearBtn.style.display = "none";
+        renderDeals();
+        searchInput.focus();
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+          e.preventDefault();
+          searchInput.focus();
+        }
+      });
+
+      const sortSelect = document.getElementById("sort-select");
+      sortSelect.addEventListener("change", (e) => {
+        currentSort = e.target.value;
+        renderDeals();
+      });
+
+      const resetBtn = document.getElementById("reset-filters-btn");
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          currentCategory = "all";
+          currentMarketplace = "all";
+          currentSearchQuery = "";
+          searchInput.value = "";
+          clearBtn.style.display = "none";
+          
+          document.querySelectorAll(".category-pill").forEach(p => p.classList.remove("active"));
+          document.querySelector(".category-pill[data-category='all']").classList.add("active");
+
+          document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+          document.querySelector(".chip[data-marketplace='all']").classList.add("active");
+
+          renderDeals();
+        });
+      }
+
+      const toggleDrawerBtn = document.getElementById("toggle-agents-drawer");
+      const closeDrawerBtn = document.getElementById("close-agents-drawer");
+      const drawer = document.getElementById("agents-drawer");
+      const overlay = document.getElementById("agents-overlay");
+
+      toggleDrawerBtn.addEventListener("click", () => {
+        drawer.classList.add("open");
+        overlay.classList.add("open");
+      });
+
+      const closeDrawer = () => {
+        drawer.classList.remove("open");
+        overlay.classList.remove("open");
+      };
+
+      closeDrawerBtn.addEventListener("click", closeDrawer);
+      overlay.addEventListener("click", closeDrawer);
+
+      const openVipBtn = document.getElementById("open-vip-modal");
+      const openVipFooterBtn = document.getElementById("open-vip-footer");
+      const closeVipBtn = document.getElementById("close-vip-modal");
+      const vipModal = document.getElementById("vip-modal");
+
+      const openVip = () => { vipModal.style.display = "flex"; };
+      const closeVip = () => { vipModal.style.display = "none"; };
+
+      openVipBtn.addEventListener("click", openVip);
+      if (openVipFooterBtn) openVipFooterBtn.addEventListener("click", openVip);
+      closeVipBtn.addEventListener("click", closeVip);
+      vipModal.addEventListener("click", (e) => {
+        if (e.target === vipModal) closeVip();
+      });
+
+      const closeAlertModalBtn = document.getElementById("close-alert-modal");
+      const alertModal = document.getElementById("alert-modal");
+      const priceAlertForm = document.getElementById("price-alert-form");
+
+      closeAlertModalBtn.addEventListener("click", () => {
+        alertModal.style.display = "none";
+      });
+
+      alertModal.addEventListener("click", (e) => {
+        if (e.target === alertModal) alertModal.style.display = "none";
+      });
+
+      priceAlertForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const targetPrice = document.getElementById("target-price-input").value;
+        const phone = document.getElementById("lead-whatsapp").value;
+
+        alertModal.style.display = "none";
+
+        addAgentLog("funnel-log", `🔔 Novo lead: Alerta para "${activeAlertProduct.title.substring(0, 25)}..." abaixo de R$ ${targetPrice} via ${phone}`);
+
+        showToast(
+          "Sniper de Preço Ativado!", 
+          `Confirmado para o WhatsApp ${phone}. Você receberá o aviso assim que atingir R$ ${targetPrice}.`
+        );
+      });
+
+      document.getElementById("close-toast").addEventListener("click", () => {
+        document.getElementById("live-toast").style.display = "none";
+      });
+
+      document.getElementById("refresh-trends-btn").addEventListener("click", () => {
+        addAgentLog("trends-log", "Buscando novas tendências no TikTok e Google Trends...");
+        showToast("Tendências Atualizadas!", "Novos virais de Moda e Tech sincronizados.");
+      });
+    }
+
+    function bindDealCardEvents() {
+      document.querySelectorAll(".btn-grab-deal").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const slug = btn.dataset.affiliate;
+          const title = btn.dataset.title;
+          const store = btn.dataset.store;
+
+          addAgentLog("backend-log", `⚡ Clique registrado: /ir/${slug} ➔ Tag de Afiliado injetada.`);
+
+          showToast(
+            `Redirecionando para ${store}...`, 
+            `Aplicando cupom e ativando garantia de melhor preço.`
+          );
+
+          setTimeout(() => {
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(title + " " + store)}`, "_blank");
+          }, 900);
+        });
+      });
+
+      document.querySelectorAll(".btn-alert-deal").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const dealId = parseInt(btn.dataset.id);
+          const deal = dealsData.find(d => d.id === dealId);
+          if (!deal) return;
+
+          activeAlertProduct = deal;
+          openAlertModal(deal);
+        });
+      });
+    }
+
+    function openAlertModal(deal) {
+      const modal = document.getElementById("alert-modal");
+      const titleElem = document.getElementById("alert-product-title");
+      const previewContainer = document.getElementById("alert-mini-preview");
+      const targetPriceInput = document.getElementById("target-price-input");
+
+      titleElem.textContent = deal.title;
+      previewContainer.innerHTML = `
+        <img src="${deal.image}" alt="${deal.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
+        <div>
+          <strong style="color: #fff; font-size: 0.85rem; display: block;">Preço Atual: R$ ${deal.currentPrice.toFixed(2)}</strong>
+          <span style="color: #94A3B8; font-size: 0.75rem;">Loja: ${deal.marketplaceName}</span>
+        </div>
+      `;
+
+      const suggestedPrice = (deal.currentPrice * 0.85).toFixed(2);
+      targetPriceInput.value = suggestedPrice;
+
+      modal.style.display = "flex";
+    }
+
+    function startAutonomousAgentSimulation() {
+      const simulatedEvents = [
+        {
+          agent: "scout-log",
+          text: "Varrendo fórum Promobit & Pelando: 14 novas postagens detectadas.",
+          toast: false
+        },
+        {
+          agent: "backend-log",
+          text: "Verificação de estoque: Fone Sony XM5 com 2 unidades restantes.",
+          toast: false
+        },
+        {
+          agent: "trends-log",
+          text: "Novo pico detectado: #EstiloMinimalista cresceu +88% no TikTok.",
+          toast: false
+        },
+        {
+          agent: "funnel-log",
+          text: "Automação: 18 novos inscritos no canal do Telegram nesta última hora.",
+          toast: false
+        },
+        {
+          agent: "frontend-log",
+          text: "Otimização de imagem: CDN carregando miniaturas WebP em 45ms.",
+          toast: false
+        },
+        {
+          agent: "scout-log",
+          text: "🚨 NOVO BUG: Cafeteira Nespresso com 70% de desconto na Amazon!",
+          toast: true,
+          title: "🚨 Novo Bug Detectado!",
+          desc: "Cafeteira Nespresso Vertuo por R$ 189 na Amazon. Corra antes de cair!"
+        }
+      ];
+
+      let eventIndex = 0;
+      setInterval(() => {
+        const current = simulatedEvents[eventIndex % simulatedEvents.length];
+        addAgentLog(current.agent, current.text);
+
+        if (current.toast) {
+          showToast(current.title, current.desc);
+          updateGlitchBanner(current.desc);
+        }
+
+        eventIndex++;
+      }, 12000);
+    }
+
+    function addAgentLog(logContainerId, text) {
+      const container = document.getElementById(logContainerId);
+      if (!container) return;
+
+      const now = new Date();
+      const timeStr = now.toTimeString().split(" ")[0];
+
+      const p = document.createElement("p");
+      p.className = "log-line";
+      p.innerHTML = `<span>${timeStr}</span> ${text}`;
+
+      container.prepend(p);
+
+      if (container.children.length > 6) {
+        container.removeChild(container.lastChild);
+      }
+    }
+
+    function updateGlitchBanner(customText) {
+      const glitchText = document.getElementById("glitch-text");
+      if (customText) {
+        glitchText.textContent = customText;
+        return;
+      }
+      glitchText.textContent = "Fone Sony WH-1000XM5 com 68% de desconto na Amazon (Preço Mínimo)";
+    }
+
+    function showToast(title, desc) {
+      const toast = document.getElementById("live-toast");
+      document.getElementById("toast-title").textContent = title;
+      document.getElementById("toast-desc").textContent = desc;
+
+      toast.style.display = "flex";
+
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 6000);
+    }
+  </script>
+</body>
+</html>

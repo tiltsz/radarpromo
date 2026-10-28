@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador Universal de Links de Afiliados • RadarPromo</title>
+  <meta name="description" content="Ferramenta autônoma para converter qualquer URL de marketplace em link de afiliado comissionado instantaneamente.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg-app: #070A12;
+      --bg-surface: #0D1322;
+      --bg-card: #121A2F;
+      --bg-card-hover: #18233E;
+      --neon-mint: #00F59B;
+      --neon-mint-dark: #00C47C;
+      --neon-mint-glow: rgba(0, 245, 155, 0.22);
+      --electric-cyan: #00D4FF;
+      --hot-coral: #FF3B5C;
+      --warning-amber: #FFB800;
+      --purple-trend: #8B5CF6;
+      --text-white: #FFFFFF;
+      --text-primary: #F1F5F9;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(0, 245, 155, 0.35);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    h1, h2, h3, h4, h5, .brand-logo { font-family: 'Outfit', sans-serif; }
+
+    .header-bar {
+      background: rgba(13, 19, 34, 0.9);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(0, 245, 155, 0.2), rgba(0, 212, 255, 0.2));
+      border: 1px solid var(--border-active);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--neon-mint);
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .btn-back:hover { color: #fff; border-color: var(--neon-mint); }
+
+    .container {
+      max-width: 1200px;
+      margin: 32px auto 0;
+      padding: 0 24px;
+    }
+
+    .hero-title {
+      margin-bottom: 24px;
+    }
+    .hero-title h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .hero-title h2 span { color: var(--neon-mint); }
+    .hero-title p { color: var(--text-secondary); font-size: 0.95rem; }
+
+    /* GRID DE CONFIGURAÇÕES DE TAGS */
+    .config-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+    .config-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .config-header h3 {
+      font-size: 1.15rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .config-header h3 svg { color: var(--neon-mint); }
+
+    .tags-inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .tag-field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .tag-field input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 0.9rem;
+      font-family: monospace;
+      outline: none;
+    }
+    .tag-field input:focus {
+      border-color: var(--neon-mint);
+      box-shadow: 0 0 0 2px var(--neon-mint-glow);
+    }
+
+    /* ÁREA DO CONVERSOR */
+    .converter-main {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-active);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      margin-bottom: 32px;
+    }
+
+    .converter-input-wrap {
+      margin-bottom: 20px;
+    }
+    .converter-input-wrap label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .converter-input-wrap textarea {
+      width: 100%;
+      height: 100px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      resize: vertical;
+    }
+    .converter-input-wrap textarea:focus {
+      border-color: var(--neon-mint);
+      box-shadow: 0 0 0 3px var(--neon-mint-glow);
+    }
+
+    .quick-sample-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .quick-sample-buttons span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .sample-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sample-btn:hover {
+      background: var(--bg-card-hover);
+      color: #fff;
+      border-color: var(--neon-mint);
+    }
+
+    .btn-convert-action {
+      background: var(--neon-mint);
+      color: #064E3B;
+      font-weight: 800;
+      font-size: 1.05rem;
+      padding: 14px 28px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 4px 20px var(--neon-mint-glow);
+      transition: all 0.2s;
+    }
+    .btn-convert-action:hover {
+      background: #34D399;
+      transform: translateY(-2px);
+    }
+
+    /* RESULTADO DA CONVERSÃO */
+    .conversion-result {
+      margin-top: 28px;
+      background: #090e1a;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .result-badge-store {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 245, 155, 0.12);
+      border: 1px solid rgba(0, 245, 155, 0.3);
+      color: var(--neon-mint);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .result-box {
+      margin-bottom: 16px;
+    }
+    .result-box label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .result-url-display {
+      background: #060810;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: monospace;
+      font-size: 0.88rem;
+      color: #7dd3fc;
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .result-url-display span.tag-highlight {
+      background: rgba(0, 245, 155, 0.25);
+      color: var(--neon-mint);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .result-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .btn-copy {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .btn-copy:hover { border-color: var(--neon-mint); color: var(--neon-mint); }
+
+    .btn-test-link {
+      background: rgba(0, 212, 255, 0.15);
+      border: 1px solid rgba(0, 212, 255, 0.4);
+      color: var(--electric-cyan);
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .btn-test-link:hover { background: rgba(0, 212, 255, 0.25); }
+
+    .btn-send-portal {
+      background: linear-gradient(135deg, #1E1B4B, #311042);
+      border: 1px solid rgba(255, 59, 92, 0.4);
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-left: auto;
+    }
+    .btn-send-portal:hover { border-color: var(--hot-coral); }
+
+    /* TOAST DE COPIADO */
+    .toast-alert {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--neon-mint);
+      color: #052e16;
+      font-weight: 800;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px var(--neon-mint-glow);
+      display: none;
+      z-index: 1000;
+      animation: fadeIn 0.2s;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <header class="header-bar">
+    <a href="index.html" class="brand-logo">
+      <div class="logo-badge"><i data-lucide="zap"></i></div>
+      <div>
+        <h3 style="font-size: 1.25rem;">Radar<span>Promo</span></h3>
+        <span style="font-size: 0.7rem; color: var(--text-secondary);">Motor de Afiliados do Backend</span>
+      </div>
+    </a>
+
+    <a href="index.html" class="btn-back">
+      <i data-lucide="arrow-left"></i>
+      <span>Voltar ao Portal</span>
+    </a>
+  </header>
+
+  <div class="container">
+    
+    <div class="hero-title">
+      <h2>Conversor Rápido de <span>Links de Afiliados</span></h2>
+      <p>Cole qualquer link comum de produto. O motor detecta o marketplace, remove parâmetros antigos e injeta o seu ID de comissão automaticamente.</p>
+    </div>
+
+    <!-- CONFIGURAÇÕES DE IDENTIFICAÇÃO DO USUÁRIO -->
+    <section class="config-card">
+      <div class="config-header">
+        <h3><i data-lucide="settings"></i> Suas Tags & IDs de Afiliado (Configuração Automática)</h3>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Salvo localmente no seu navegador</span>
+      </div>
+
+      <div class="tags-inputs-grid">
+        <div class="tag-field">
+          <label>Amazon Tracking ID</label>
+          <input type="text" id="tag-amazon" value="radarpromo-20" placeholder="ex: seunome-20">
+        </div>
+
+        <div class="tag-field">
+          <label>Parceiro Magalu (Nome da Loja)</label>
+          <input type="text" id="tag-magalu" value="radarpromo" placeholder="ex: magazinevoce.com.br/sualoja">
+        </div>
+
+        <div class="tag-field">
+          <label>Shopee Sub-ID / Campanha</label>
+          <input type="text" id="tag-shopee" value="radarpromo_deals" placeholder="ex: sub_id_portal">
+        </div>
+
+        <div class="tag-field">
+          <label>Mercado Livre Tracking Code</label>
+          <input type="text" id="tag-mercadolivre" value="RADAR_ML_2026" placeholder="ex: ML_PROMO">
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMULÁRIO DO CONVERSOR -->
+    <section class="converter-main">
+      <div class="converter-input-wrap">
+        <label for="input-url">Cole a URL do Produto do Marketplace:</label>
+        <textarea id="input-url" placeholder="Exemplo: https://www.amazon.com.br/dp/B0CHX1W1XY ou https://www.magazineluiza.com.br/produto/12345"></textarea>
+      </div>
+
+      <!-- BOTÕES DE EXEMPLO RÁPIDO PARA TESTAR -->
+      <div class="quick-sample-buttons">
+        <span>Testar rápido com link real:</span>
+        <button class="sample-btn" data-url="https://www.amazon.com.br/Headphone-Philips-Wireless-Bluetooth-TAH1108BK/dp/B0CKK22T1B?ref=qualquer_coisa&tag=outro_afiliado">Amazon</button>
+        <button class="sample-btn" data-url="https://www.magazineluiza.com.br/fritadeira-eletrica-sem-oleo-air-fryer-mondial-afn-40-ri-vermelha-4l-com-timer/p/231149700/ep/eafr/">Magalu</button>
+        <button class="sample-btn" data-url="https://shopee.com.br/product/123456/7891011">Shopee</button>
+        <button class="sample-btn" data-url="https://www.mercadolivre.com.br/apple-iphone-15-128-gb-preto/p/MLB24111306">Mercado Livre</button>
+      </div>
+
+      <button class="btn-convert-action" id="btn-convert">
+        <i data-lucide="wand-2"></i>
+        <span>Converter para Meu Link de Afiliado</span>
+      </button>
+
+      <!-- CARD DE RESULTADO -->
+      <div class="conversion-result" id="conversion-result">
+        <span class="result-badge-store" id="res-store-badge">
+          <i data-lucide="check-circle-2"></i> <span id="res-store-name">Amazon Detectada</span>
+        </span>
+
+        <div class="result-box">
+          <label>Link Direto com Comissão Injetada:</label>
+          <div class="result-url-display" id="res-affiliate-url"></div>
+        </div>
+
+        <div class="result-box">
+          <label>Link Curto / Mascarado do RadarPromo (Ideal para postar em Grupos/Redes):</label>
+          <div class="result-url-display" id="res-cloaked-url"></div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-copy" id="btn-copy-affiliate">
+            <i data-lucide="copy"></i>
+            <span>Copiar Link de Afiliado</span>
+          </button>
+
+          <button class="btn-copy" id="btn-copy-cloaked">
+            <i data-lucide="link"></i>
+            <span>Copiar Link Mascarado</span>
+          </button>
+
+          <a href="#" target="_blank" class="btn-test-link" id="btn-test-link">
+            <i data-lucide="external-link"></i>
+            <span>Testar no Navegador</span>
+          </a>
+
+          <button class="btn-send-portal" id="btn-add-catalog">
+            <i data-lucide="plus-circle"></i>
+            <span>Adicionar à Vitrine do Portal</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="toast-alert" id="toast-alert">Copiado para a área de transferência!</div>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+
+    // Carregar configurações do localStorage se existirem
+    ['amazon', 'magalu', 'shopee', 'mercadolivre'].forEach(store => {
+      const saved = localStorage.getItem(`radarpromo_tag_${store}`);
+      if (saved) document.getElementById(`tag-${store}`).value = saved;
+
+      document.getElementById(`tag-${store}`).addEventListener('input', (e) => {
+        localStorage.setItem(`radarpromo_tag_${store}`, e.target.value);
+      });
+    });
+
+    // Botões de exemplo rápido
+    document.querySelectorAll('.sample-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('input-url').value = btn.dataset.url;
+        converterLink();
+      });
+    });
+
+    document.getElementById('btn-convert').addEventListener('click', converterLink);
+
+    let lastGeneratedAffiliateUrl = "";
+    let lastGeneratedCloakedUrl = "";
+
+    function converterLink() {
+      const rawUrl = document.getElementById('input-url').value.trim();
+      if (!rawUrl) {
+        alert("Por favor, cole uma URL para converter.");
+        return;
+      }
+
+      const tagAmazon = document.getElementById('tag-amazon').value.trim() || 'radarpromo-20';
+      const tagMagalu = document.getElementById('tag-magalu').value.trim() || 'radarpromo';
+      const tagShopee = document.getElementById('tag-shopee').value.trim() || 'radarpromo_deals';
+      const tagML = document.getElementById('tag-mercadolivre').value.trim() || 'RADAR_ML_2026';
+
+      let storeName = "Loja Desconhecida";
+      let affiliateUrl = "";
+      let slug = "oferta-" + Math.floor(1000 + Math.random() * 9000);
+
+      try {
+        const urlObj = new URL(rawUrl);
+
+        // 1. AMAZON
+        if (urlObj.hostname.includes('amazon.')) {
+          storeName = "Amazon Brasil";
+          // Limpa parâmetros antigos e insere tag
+          urlObj.searchParams.delete('tag');
+          urlObj.searchParams.delete('ref');
+          urlObj.searchParams.set('tag', tagAmazon);
+          affiliateUrl = urlObj.toString();
+          slug = "amazon-" + (urlObj.pathname.split('/dp/')[1] || 'produto').split('/')[0].split('?')[0];
+        } 
+        // 2. MAGAZINE LUIZA
+        else if (urlObj.hostname.includes('magazineluiza.com.br')) {
+          storeName = "Magazine Luiza (Parceiro Magalu)";
+          // Substitui para loja parceiro magalu
+          const path = urlObj.pathname;
+          affiliateUrl = `https://www.magazinevoce.com.br/magazine${tagMagalu}${path}`;
+          slug = "magalu-" + (path.split('/p/')[1] || 'produto').split('/')[0];
+        }
+        // 3. SHOPEE
+        else if (urlObj.hostname.includes('shopee.')) {
+          storeName = "Shopee";
+          urlObj.searchParams.set('sub_id', tagShopee);
+          affiliateUrl = urlObj.toString();
+          slug = "shopee-" + Math.floor(10000 + Math.random() * 90000);
+        }
+        // 4. MERCADO LIVRE
+        else if (urlObj.hostname.includes('mercadolivre.') || urlObj.hostname.includes('mercadolivre.com')) {
+          storeName = "Mercado Livre";
+          urlObj.searchParams.set('matt_tool', tagML);
+          affiliateUrl = urlObj.toString();
+          slug = "ml-" + Math.floor(10000 + Math.random() * 90000);
+        }
+        // OUTROS
+        else {
+          storeName = "Marketplace Geral (Lomadee / Awin)";
+          urlObj.searchParams.set('aff_id', tagAmazon);
+          affiliateUrl = urlObj.toString();
+        }
+
+      } catch (err) {
+        alert("URL inválida. Certifique-se de colar um link completo com https://");
+        return;
+      }
+
+      const cloakedUrl = `https://radarpromo.com.br/ir/${slug}`;
+      lastGeneratedAffiliateUrl = affiliateUrl;
+      lastGeneratedCloakedUrl = cloakedUrl;
+
+      // Exibir no resultado
+      const resultCard = document.getElementById('conversion-result');
+      document.getElementById('res-store-name').textContent = `${storeName} Detectada`;
+      
+      document.getElementById('res-affiliate-url').innerHTML = affiliateUrl.replace(/tag=[^&]+|magazine[a-zA-Z0-9_-]+|sub_id=[^&]+|matt_tool=[^&]+/g, match => `<span class="tag-highlight">${match}</span>`);
+      document.getElementById('res-cloaked-url').innerHTML = `<span class="tag-highlight">${cloakedUrl}</span>`;
+      
+      document.getElementById('btn-test-link').href = affiliateUrl;
+      resultCard.style.display = 'block';
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Copiar link
+    document.getElementById('btn-copy-affiliate').addEventListener('click', () => {
+      navigator.clipboard.writeText(lastGeneratedAffiliateUrl);
+      showToast("Link de Afiliado copiado!");
+    });
+
+    document.getElementById('btn-copy-cloaked').addEventListener('click', () => {
+      navigator.clipboard.writeText(lastGeneratedCloakedUrl);
+      showToast("Link Mascarado copiado!");
+    });
+
+    document.getElementById('btn-add-catalog').addEventListener('click', () => {
+      showToast("Sucesso! Produto integrado à esteira do Portal.");
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-alert');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+  </script>
+</body>
+</html>
